@@ -1,2 +1,2 @@
 # azure-policy-terraform
-Terraform for Azure Policu
+Terraform for Azure Policy
