@@ -60,6 +60,42 @@ PARAMETERS
 
 }
 
+resource "azurerm_policy_definition" "open_network_acl" {
+  name         = "networkACLRestrictPolicy"
+  policy_type  = "Custom"
+  mode         = "Indexed"
+  display_name = "Network ACL Restriction Policy"
+
+  metadata = <<METADATA
+    {
+    "category": "General"
+    }
+
+METADATA
+
+
+  policy_rule = <<POLICY_RULE
+  {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/networkInterfaces"
+          },
+          {
+            "field": "Microsoft.Network/networkInterfaces/enableIpForwarding",
+            "equals": "true"
+          }
+        ]
+      },
+      "then": {
+        "effect": "deny"
+      }
+    }
+POLICY_RULE
+
+}
+
 resource "azurerm_resource_group_policy_assignment" "location_policy_assigment" {
   name                 = "locRestrictAssign"
   resource_group_id    = azurerm_resource_group.sample.id
@@ -81,7 +117,7 @@ resource "azurerm_resource_group_policy_assignment" "sku_policy_assigment" {
   parameters = <<PARAMETERS
   {
       "listOfAllowedSKUs": {
-      "value": ["Dsv3","Dv3"]
+      "value": ["Dsv3","Dv3","DS1_v2"]
     }
   }
   PARAMETERS
