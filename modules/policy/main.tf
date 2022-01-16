@@ -39,7 +39,7 @@ METADATA
       }
     },
     "then": {
-      "effect": "audit"
+      "effect": "deny"
     }
   }
 POLICY_RULE
@@ -68,6 +68,20 @@ resource "azurerm_resource_group_policy_assignment" "location_policy_assigment" 
   {
       "allowedLocations": {
       "value": ["southcentralus"]
+    }
+  }
+  PARAMETERS
+}
+
+resource "azurerm_resource_group_policy_assignment" "sku_policy_assigment" {
+  name                 = "skuRestrictAssign"
+  resource_group_id    = azurerm_resource_group.sample.id
+  policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/cccc23c7-8427-4f53-ad12-b6a63eb452b3"
+
+  parameters = <<PARAMETERS
+  {
+      "listOfAllowedSKUs": {
+      "value": ["Dsv3","Dv3"]
     }
   }
   PARAMETERS
